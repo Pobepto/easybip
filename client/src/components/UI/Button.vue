@@ -37,6 +37,8 @@ export default class EasyButton extends Vue {
   text-transform: uppercase;
   cursor: pointer;
 
+  margin-bottom: 1rem;
+
   &.secondary {
     background-color: $grey;
   }

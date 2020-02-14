@@ -1,34 +1,41 @@
 <template>
   <div class="payment_info">
     <EasyTitle title="PAYMENT <br>INFORMATION" />
-    <template v-if="type === 1">
+    <template v-if="type === types.Multi">
       <EasyInput
         label="From"
+        @input="v => syncInfo.from = v"
       />
     </template>
-    <template v-if="type === 2">
+    <template v-if="type === types.Single">
       <EasyInput
         label="From"
+        @input="v => syncInfo.from = v"
       />
       <EasyInput
         label="To"
-      />
-      <EasyInput
-        label="Amount"
+        @input="v => syncInfo.to = v"
       />
     </template>
     <EasyButton
-      title="Create payment"
-      @click="() => {}"
+      title="Continue"
+      @click="onClick"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component, Prop, PropSync } from 'vue-property-decorator'
 import EasyTitle from '@/components/UI/Title.vue'
 import EasyInput from '@/components/UI/Input.vue'
 import EasyButton from '@/components/UI/Button.vue'
+
+import { Type } from '../../enums'
+
+interface InfoStructure {
+  from: string;
+  to: string;
+}
 
 @Component({
   components: {
@@ -38,8 +45,11 @@ import EasyButton from '@/components/UI/Button.vue'
   }
 })
 export default class PaymentInfo extends Vue {
-  // 1 - Single type, 2 - Multi type
-  @Prop({ default: 1 }) readonly type!: number
+  @Prop({ default: 0 }) readonly type!: Type
+  @Prop(Function) readonly onClick!: () => {}
+  @PropSync('info', { default: Object }) syncInfo!: InfoStructure
+
+  types = Type
 }
 </script>
 

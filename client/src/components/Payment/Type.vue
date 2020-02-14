@@ -2,10 +2,16 @@
   <div class="payment_type">
     <EasyTitle title="CHOOSE TYPE OF <br>PAYMENT" />
     <div class="payment_type-buttons">
-      <EasyIconButton title="Single">
+      <EasyIconButton
+        title="Single"
+        @click="syncType = types.Single"
+      >
         <SingleTypeIcon />
       </EasyIconButton>
-      <EasyIconButton title="Multi">
+      <EasyIconButton
+        title="Multi"
+        @click="syncType = types.Multi"
+      >
         <MultiTypeIcon />
       </EasyIconButton>
     </div>
@@ -13,12 +19,14 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, PropSync } from 'vue-property-decorator'
 import EasyTitle from '@/components/UI/Title.vue'
 import EasyIconButton from '@/components/UI/IconButton.vue'
 
 import MultiTypeIcon from '@/assets/multi-type.svg'
 import SingleTypeIcon from '@/assets/single-type.svg'
+
+import { Type } from '../../enums'
 
 @Component({
   components: {
@@ -28,7 +36,11 @@ import SingleTypeIcon from '@/assets/single-type.svg'
     SingleTypeIcon
   }
 })
-export default class PaymentType extends Vue {}
+export default class PaymentType extends Vue {
+  @PropSync('type', { default: null }) syncType!: number | null
+
+  types = Type
+}
 </script>
 
 <style lang="scss" scoped>

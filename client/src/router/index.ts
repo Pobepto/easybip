@@ -22,6 +22,10 @@ const routes = [
     path: '/receipt',
     name: 'Receipt',
     component: Receipt
+  },
+  {
+    path: '*',
+    redirect: '/'
   }
 ]
 

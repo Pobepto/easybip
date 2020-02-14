@@ -4,16 +4,17 @@
     <EasyInput
       label="Password"
       type="password"
+      @input="v => syncPass = v"
     />
     <EasyButton
       title="Continue"
-      @click="() => {}"
+      @click="onClick"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, PropSync, Prop } from 'vue-property-decorator'
 import EasyTitle from '@/components/UI/Title.vue'
 import EasyInput from '@/components/UI/Input.vue'
 import EasyButton from '@/components/UI/Button.vue'
@@ -25,7 +26,10 @@ import EasyButton from '@/components/UI/Button.vue'
     EasyButton
   }
 })
-export default class PaymentProtection extends Vue {}
+export default class PaymentProtection extends Vue {
+  @PropSync('password', { default: '' }) syncPass!: string
+  @Prop(Function) readonly onClick!: () => {}
+}
 </script>
 
 <style lang="scss" scoped>

@@ -18,7 +18,6 @@ export default class EasyIconButton extends Vue {
   @Prop({ default: '' }) readonly title!: string
 
   onClick (v: any) {
-    console.log(typeof v)
     this.$emit('click', v)
   }
 }

@@ -4,9 +4,12 @@
     <EasyInput
       label="Address"
       icon="copy"
+      :value="123123123123"
+      :disabled="true"
     />
-    <EasyLoader />
+    <EasyLoader v-if="isLoading"/>
     <EasyButton
+      v-else
       title="Continue"
       @click="() => {}"
     />
@@ -28,7 +31,9 @@ import EasyLoader from '@/components/UI/Loading.vue'
     EasyLoader
   }
 })
-export default class PaymentProtection extends Vue {}
+export default class PaymentProtection extends Vue {
+  isLoading = true
+}
 </script>
 
 <style lang="scss" scoped>

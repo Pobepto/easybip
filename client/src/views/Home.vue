@@ -8,7 +8,7 @@
       <div class="content_left-button">
         <EasyButton
           title="Create payment"
-          @click="() => {}"
+          @click="goTo"
         />
       </div>
     </div>
@@ -32,7 +32,9 @@ import PhoneIcon from '@/assets/phone-15deg.svg'
   }
 })
 export default class Home extends Vue {
-
+  goTo () {
+    this.$router.push({ name: 'Payment' })
+  }
 }
 </script>
 
