@@ -1,32 +1,44 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+    <EasyHeader />
     <router-view/>
   </div>
 </template>
 
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator'
+import EasyHeader from '@/components/UI/Header.vue'
+
+@Component({
+  components: {
+    EasyHeader
+  }
+})
+export default class App extends Vue {}
+</script>
+
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,400,500,700&display=swap');
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  display: flex;
+  align-self: center;
+  flex-direction: column;
+  margin: 0 auto;
+  max-width: 80vw;
 }
 
-#nav {
-  padding: 30px;
+html {
+  font-family: 'IBM Plex Sans', sans-serif;
+  color: $black2;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+.block_center {
+  display: flex;
+  flex-direction: column;
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+  max-width: 35vw;
+  width: 35vw;
+  margin: 0 auto;
 }
 </style>
