@@ -87,7 +87,6 @@ export default class EasyInput extends Vue {
     font-size: 0.9rem;
     animation: 0.3s linear hide;
     background-color: #ffffff;
-    padding-left: 1rem;
   }
   .input_block-icon {
     position: absolute;

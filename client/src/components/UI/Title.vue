@@ -19,7 +19,9 @@ export default class EasyTitle extends Vue {
   margin: 2.5rem 0;
   .title_block-title {
     font-weight: 600;
-    font-size: 3.5rem;
+    // font-size: 3.5rem;
+
+    @include fluid-type(2, 3.5, 350, 1200)
   }
 }
 </style>

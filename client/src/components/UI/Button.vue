@@ -1,6 +1,6 @@
 <template>
   <button
-    :class="`button ${type}`"
+    :class="`button ${type} ${loading ? 'loading' : ''}`"
     @click="onClick"
   >
     {{ title }}
@@ -14,6 +14,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 export default class EasyButton extends Vue {
   @Prop({ default: '' }) readonly title!: string
   @Prop({ default: '' }) readonly type!: string
+  @Prop({ default: false }) readonly loading!: boolean
 
   onClick (v: any) {
     this.$emit('click', v)
@@ -25,7 +26,8 @@ export default class EasyButton extends Vue {
 .button {
   background-color: $yellow;
   border-radius: 10px;
-  border-width: 0;
+  border-width: 1px;
+  border-color: $yellow;
   color: $black1;
 
   height: 45px;
@@ -43,9 +45,22 @@ export default class EasyButton extends Vue {
     background-color: $grey;
   }
 
-&:hover {
+  &:hover {
     border-color: $black1;
     border-width: 1px;
+  }
+}
+
+.loading {
+  animation: loading 1s linear infinite alternate;
+}
+
+@keyframes loading {
+  0% {
+    border-color: $black1;
+  }
+  100% {
+    border-color: $yellow;
   }
 }
 </style>

@@ -3,17 +3,18 @@
     <div class="content_left">
       <div class="content_left-text">
         <span class="content_left-title">Easy<br>Payment</span>
+        <img src="@/assets/phone.png" class="content_left-phone" />
         <span class="content_left-desc">Fast. Easy. Secure.</span>
       </div>
       <div class="content_left-button">
         <EasyButton
-          title="Create payment"
+          title="Create push"
           @click="goTo"
         />
       </div>
     </div>
     <div class="content_right">
-      <PhoneIcon />
+      <PhoneIcon class="content_right-phone" />
     </div>
   </div>
 </template>
@@ -43,6 +44,16 @@ export default class Home extends Vue {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   grid-template-areas: ". .";
+  align-content: center;
+  height: 80vh;
+
+  @media screen and (max-width: 1149px) {
+    display: flex;
+    flex-direction: column;
+    flex-direction: column-reverse;
+    align-items: center;
+    height: unset;
+  }
 
   .content_left {
     display: flex;
@@ -53,22 +64,50 @@ export default class Home extends Vue {
       display: flex;
       flex-direction: column;
 
+      @media screen and (max-width: 1149px) {
+        align-items: center;
+        width: 100%;
+      }
+
       .content_left-title {
         font-weight: 600;
-        font-size: 9rem;
         padding: 1rem 0.5rem;
+        @include fluid-type(3, 9, 350, 1200);
       }
 
       .content_left-desc {
         font-weight: 300;
         font-size: 2rem;
         padding: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .content_left-phone {
+        display: none;
+        @media screen and (max-width: 1149px) {
+          align-self: center;
+          width: 30vw;
+          display: unset;
+        }
       }
     }
 
     .content_left-button {
       width: 25rem;
       margin-bottom: 1rem;
+
+      @media screen and (max-width: 1149px) {
+        width: 20rem;
+      }
+    }
+  }
+
+  .content_right {
+    .content_right-phone {
+      display: unset;
+      @media screen and (max-width: 1149px) {
+        display: none;
+      }
     }
   }
 }
