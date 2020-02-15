@@ -1,8 +1,15 @@
 import hashlib
+import logging
 import os
 import short_url
 from Cryptodome.Cipher import AES
 import binascii
+import smtplib
+from socket import gaierror
+
+logger = logging.getLogger(__file__)
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging.FileHandler("mail.log"))
 
 
 def create_short_link(number):
@@ -40,5 +47,32 @@ def compare_hash(password, password_hash):
     return False
 
 
-def send_email(text):
-    pass
+def send_email(receiver, link, name):
+    port = 587
+    smtp_server = "in-v3.mailjet.com"
+    login = os.environ.get("EMAIL_LOGIN")
+    password = os.environ.get("EMAIL_PASSWORD")
+
+    sender = "easybip@yandex.ru"
+
+    message = f"""\
+    Subject: Hi, {name}
+    To: {receiver}
+    From: {sender}
+    Here is your BIP link.
+    {link}"""
+
+    try:
+        with smtplib.SMTP(smtp_server, port) as server:
+            server.login(login, password)
+            server.sendmail(sender, receiver, message)
+    except (gaierror, ConnectionRefusedError):
+        logger.error('Failed to connect to the server. Bad connection settings?')
+        return False
+    except smtplib.SMTPServerDisconnected:
+        logger.error('Failed to connect to the server. Wrong user/password?')
+        return False
+    except smtplib.SMTPException as e:
+        logger.error('SMTP error occurred: ' + str(e))
+        return False
+    return True

@@ -26,4 +26,3 @@ class SendBIPTransaction(BaseModel):
 class CheckPassword(BaseModel):
     link: str
     password: str
-

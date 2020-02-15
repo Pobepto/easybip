@@ -1,67 +1,85 @@
+import os
+
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-import os
 
 
 class PostgreSQL:
     def __init__(self):
         con = psycopg2.connect(user=os.environ.get("DB_USERNAME"),
-                               dbname='project',
-                               password=os.environ.get("DB_PASSWORD"))
+                               dbname=os.environ.get("DB_NAME"),
+                               password=os.environ.get("DB_PASSWORD"),
+                               host="127.0.0.1",
+                               port="5432")
 
-        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT);
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         self.con = con
-        self.cursor = con.cursor();
 
     def create_record(self, address, private_key, link, password, from_="", to="", source_link="", amount="",
                       email="", activated=0):
-        self.cursor.execute(
+        cursor = self.con.cursor()
+        cursor.execute(
             f"""INSERT INTO Wallets
                 VALUES ('{address}', '{private_key}', '{link}', '{password}', '{from_}',
                         '{to}', '{amount}', '{email}', '{activated}', '{source_link}');
             """)
+        cursor.close()
 
     def count_of_records(self):
-        self.cursor.execute(
+        cursor = self.con.cursor()
+        cursor.execute(
             f"""SELECT COUNT (Address) 
                 FROM Wallets;
             """)
-        return self.cursor.fetchone()[0]
+        res = cursor.fetchone()[0]
+        cursor.close()
+        return res
 
     def get_record_by_source_link(self, source_link):
-        self.cursor.execute(
+        cursor = self.con.cursor()
+        cursor.execute(
             f"""SELECT * 
                 FROM Wallets 
                 WHERE SourceLink = '{source_link}';
             """
         )
-        return self.__wrap_up_record(self.cursor.fetchall())
+        res = self.__wrap_up_record(cursor.fetchall())
+        cursor.close()
+        return res
 
     def get_record_by_link(self, link):
-        self.cursor.execute(
+        cursor = self.con.cursor()
+        cursor.execute(
             f"""SELECT * 
                 FROM Wallets 
                 WHERE Link = '{link}';
             """
         )
-        return self.__wrap_up_record(self.cursor.fetchall())
+        res = self.__wrap_up_record(cursor.fetchall())
+        cursor.close()
+        return res
 
     def get_record_by_address(self, address):
-        self.cursor.execute(
+        cursor = self.con.cursor()
+        cursor.execute(
             f"""SELECT * 
                 FROM Wallets 
                 WHERE Address = '{address}';
             """
         )
-        return self.__wrap_up_record(self.cursor.fetchall())
+        res = self.__wrap_up_record(cursor.fetchall())
+        cursor.close()
+        return res
 
     def activate_wallet(self, address):
-        self.cursor.execute(
+        cursor = self.con.cursor()
+        cursor.execute(
             f"""UPDATE Wallets
                 SET Activated = 1
                 WHERE Address = '{address}'
             """
         )
+        cursor.close()
 
     def __wrap_up_record(self, records):
         if len(records) == 1:

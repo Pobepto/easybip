@@ -6,7 +6,7 @@ from starlette.responses import JSONResponse
 
 from minter_push.utils.minter_utils import MinterApiUtils
 from minter_push.utils.utils import create_short_link, encrypt_private_key, get_password_hash, decrypt_private_key, \
-    compare_hash
+    compare_hash, send_email
 from minter_push.db.postgresql import PostgreSQL
 from minter_push.api.minter_models import SendToSingleUser, SendToSeveralUsers, SendBIPTransaction, CheckPassword
 
@@ -19,7 +19,7 @@ minter_api_utils = MinterApiUtils()
 postgres = PostgreSQL()
 
 
-@app.post("/wallet/send")
+@app.post("/api/v1/wallet/send")
 async def send_to_single_user(request: SendToSingleUser):
     """
     Create wallet for single user
@@ -42,12 +42,12 @@ async def send_to_single_user(request: SendToSingleUser):
     except Exception as exc:
         logger.error(exc)
         return JSONResponse(
-            status_code=401,
+            status_code=500,
             content="Something goes wrong."
         )
 
 
-@app.post("/wallets/send")
+@app.post("/api/v1/wallets/send")
 async def send_to_several_users(request: SendToSeveralUsers):
     """
     Create wallets for several users
@@ -85,12 +85,12 @@ async def send_to_several_users(request: SendToSeveralUsers):
     except Exception as exc:
         logger.error(exc)
         return JSONResponse(
-            status_code=401,
+            status_code=500,
             content="Something goes wrong."
         )
 
 
-@app.get("/wallet/{link}")
+@app.get("/api/v1/wallet/{link}")
 async def get_address_by_link(link: str):
     """
     Return address of wallet by wallet link
@@ -101,7 +101,7 @@ async def get_address_by_link(link: str):
         if record is None:
             return JSONResponse(
                 content=f"The link {link} is not represented in the database",
-                status_code=401
+                status_code=404
             )
         return JSONResponse(
             {"address": record["address"]},
@@ -110,12 +110,12 @@ async def get_address_by_link(link: str):
     except Exception as exc:
         logger.error(exc)
         return JSONResponse(
-            status_code=401,
+            status_code=500,
             content="Something goes wrong."
         )
 
 
-@app.get("/wallet/activate/{address}")
+@app.get("/api/v1/wallet/activate/{address}")
 async def activate_wallet(address: str):
     """
     Activate wallet after wallet replenishment
@@ -124,15 +124,28 @@ async def activate_wallet(address: str):
     """
     try:
         address_record = postgres.get_record_by_address(address)
+        if address_record["source_link"] == "":
+            postgres.activate_wallet(address)
+            return JSONResponse(
+                {"link": address_record["link"]},
+                status_code=200
+            )
+
         if address_record is None:
             return JSONResponse(
                 content=f"The address {address} is not represented in the database",
                 status_code=401
             )
+
+        if address_record is None:
+            return JSONResponse(
+                content=f"The address {address} is not represented in the database",
+                status_code=404
+            )
         records = postgres.get_record_by_source_link(address_record["source_link"])
         if records is None:
             return JSONResponse(
-                status_code=401,
+                status_code=500,
                 content="Something goes wrong"
             )
 
@@ -143,9 +156,7 @@ async def activate_wallet(address: str):
                 status_code=200
             )
 
-        send_bip = {}
-        send_bip["link"] = address_record["source_link"]
-        send_bip["password"] = os.environ.get("WALLET_PASSWORD", "")
+        send_bip = {"link": address_record["source_link"], "password": os.environ.get("WALLET_PASSWORD", "")}
         links = []
         for record in records:
             if record["link"] == record["source_link"]:
@@ -156,6 +167,7 @@ async def activate_wallet(address: str):
                                        to=send_bip["to"])
             res = await send_bip_transaction(s_b_t)
             if res.status_code == 200:
+                send_email(record["email"])
                 postgres.activate_wallet(record["address"])
                 links.append(record["link"])
             else:
@@ -167,12 +179,12 @@ async def activate_wallet(address: str):
     except Exception as exc:
         logger.error(exc)
         return JSONResponse(
-            status_code=401,
+            status_code=500,
             content="Something goes wrong."
         )
 
 
-@app.get("/wallet/is_activated/{link}")
+@app.get("/api/v1/wallet/is_activated/{link}")
 async def is_activated_wallet(link: str):
     """
     Check if wallet is activated
@@ -183,7 +195,7 @@ async def is_activated_wallet(link: str):
         if record is None:
             return JSONResponse(
                 content=f"The link {link} is not represented in the database",
-                status_code=401
+                status_code=404
             )
         if record["activated"] == "1":
             res = True
@@ -196,12 +208,12 @@ async def is_activated_wallet(link: str):
     except Exception as exc:
         logger.error(exc)
         return JSONResponse(
-            status_code=401,
+            status_code=500,
             content="Something goes wrong."
         )
 
 
-@app.post("/send/bip_wallet")
+@app.post("/api/v1/send/bip_wallet")
 async def send_bip_transaction(request: SendBIPTransaction):
     """
     Send BIP to another BIP wallet
@@ -212,21 +224,27 @@ async def send_bip_transaction(request: SendBIPTransaction):
         if record is None:
             return JSONResponse(
                 content=f"The link {request.link} is not represented in the database",
-                status_code=401
+                status_code=404
             )
         address = record["address"]
         encrypted_private_key = record["private_key"]
         private_key = decrypt_private_key(encrypted_private_key, request.password)
         res = minter_api_utils.send_transaction(coin="BIP", to=request.to, value=request.amount, from_address=address,
                                                 private_key=private_key)
-        print(res)
-        return JSONResponse(
-            status_code=200
-        )
+        if res.status_code == 200:
+            return JSONResponse(
+                status_code=200
+            )
+        else:
+            logger.error(res.content)
+            return JSONResponse(
+                status_code=500,
+                content="Something goes wrong.")
+
     except Exception as exc:
         logger.error(exc)
         return JSONResponse(
-            status_code=401,
+            status_code=500,
             content="Something goes wrong."
         )
 
@@ -242,7 +260,7 @@ async def check_password(request: CheckPassword):
         if record is None:
             return JSONResponse(
                 content=f"The link {request.link} is not represented in the database",
-                status_code=401
+                status_code=404
             )
         correct_password = compare_hash(request.password, record["password"])
 
@@ -261,7 +279,7 @@ async def check_password(request: CheckPassword):
     except Exception as exc:
         logger.error(exc)
         return JSONResponse(
-            status_code=401,
+            status_code=500,
             content="Something goes wrong."
         )
 
@@ -281,6 +299,6 @@ async def check_password(address: str):
     except Exception as exc:
         logger.error(exc)
         return JSONResponse(
-            status_code=401,
+            status_code=500,
             content="Something goes wrong."
         )
