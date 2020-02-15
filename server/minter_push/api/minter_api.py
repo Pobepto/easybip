@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 
@@ -236,10 +237,15 @@ async def send_bip_transaction(request: SendBIPTransaction):
                 status_code=200
             )
         else:
-            logger.error(res.content)
-            return JSONResponse(
-                status_code=500,
-                content="Something goes wrong.")
+            if json.loads(res.text)['error']['code'] == 107:
+                return JSONResponse(
+                    status_code=407,
+                    content="Not enough money")
+            else:
+                logger.info(res.content)
+                return JSONResponse(
+                    status_code=500,
+                    content=json.loads(res.text)['error']["log"])
 
     except Exception as exc:
         logger.error(exc)
@@ -249,7 +255,7 @@ async def send_bip_transaction(request: SendBIPTransaction):
         )
 
 
-@app.post("/password/check")
+@app.post("/api/v1/password/check")
 async def check_password(request: CheckPassword):
     """
     Check password of wallet
@@ -284,7 +290,7 @@ async def check_password(request: CheckPassword):
         )
 
 
-@app.get("/wallet/balance/{address}")
+@app.get("/api/v1/wallet/balance/{address}")
 async def check_password(address: str):
     """
     Check password of wallet
