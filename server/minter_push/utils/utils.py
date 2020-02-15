@@ -60,7 +60,7 @@ def send_email(receiver, link, name):
     To: {receiver}
     From: {sender}
     Here is your BIP link.
-    {link}"""
+    https://easybip.ru/r/{link}"""
 
     try:
         with smtplib.SMTP(smtp_server, port) as server:

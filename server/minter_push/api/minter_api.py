@@ -167,7 +167,7 @@ async def activate_wallet(address: str):
                                        to=send_bip["to"])
             res = await send_bip_transaction(s_b_t)
             if res.status_code == 200:
-                send_email(record["email"])
+                send_email(receiver=record["email"], link=record["link"], name=record["to"])
                 postgres.activate_wallet(record["address"])
                 links.append(record["link"])
             else:
