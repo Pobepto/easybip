@@ -1,6 +1,6 @@
 fastapi
 uvicorn
-starlette
+starlette==0.12.9
 requests
 minter-sdk
 short_url
