@@ -214,14 +214,19 @@ const actions = {
     }
   },
 
-  async transfer ({ commit, state }, data) {
+  async transfer ({ commit, state, dispatch }, data) {
     commit(types.TRANSFER_REQUEST)
     try {
+      const { password } = state.account
       const info = {
         ...data,
         password: state.account.password
       }
       await easyBipApi.sendMoney(info)
+      await dispatch('login', {
+        link: data.link,
+        password
+      })
       commit(types.TRANSFER_SUCCESS)
       return Promise.resolve()
     } catch (error) {

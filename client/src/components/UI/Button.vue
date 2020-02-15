@@ -30,6 +30,8 @@ export default class EasyButton extends Vue {
   border-color: $yellow;
   color: $black1;
 
+  outline: none;
+
   height: 45px;
   width: 100%;
 
