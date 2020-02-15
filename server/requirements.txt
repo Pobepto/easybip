@@ -1,0 +1,6 @@
+uvicorn
+starlette
+fastapi
+requests
+minter-sdk
+short_url
