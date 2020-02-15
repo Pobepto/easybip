@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const PROTOCOL = location.protocol
-const URL = '85.143.172.118:124'
+const URL = location.host + '/api/v1'
 
 interface SingleUserRequestStructure {
   from_: string;
