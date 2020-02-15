@@ -5,6 +5,8 @@ import Home from '@/views/Home.vue'
 import Payment from '@/views/Payment.vue'
 import Receipt from '@/views/Receipt.vue'
 
+import Store from '@/store'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -15,13 +17,49 @@ const routes = [
   },
   {
     path: '/create',
+    alias: '/c',
     name: 'Payment',
-    component: Payment
+    component: Payment,
+    children: [
+      {
+        path: ':link',
+        name: 'PaymentLink',
+        component: Payment,
+        async beforeEnter (to, from, next) {
+          const { link } = to.params
+          Store.dispatch('getAddressByUrl', { link })
+            .then(() => {
+              next()
+            })
+            .catch(() => {
+              next({ name: 'Home' })
+            })
+        }
+      }
+    ]
   },
   {
     path: '/receipt',
+    alias: '/r',
     name: 'Receipt',
-    component: Receipt
+    component: Receipt,
+    children: [
+      {
+        path: ':link',
+        name: 'ReceiptLink',
+        component: Payment,
+        async beforeEnter (to, from, next) {
+          const { link } = to.params
+          Store.dispatch('isLinkActivated', { link })
+            .then(() => {
+              next()
+            })
+            .catch(() => {
+              next({ name: 'Home' })
+            })
+        }
+      }
+    ]
   },
   {
     path: '*',
@@ -30,6 +68,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 

@@ -26,6 +26,7 @@ export default class App extends Vue {}
   flex-direction: column;
   margin: 0 auto;
   max-width: 80vw;
+  height: 100vh;
 }
 
 html {
@@ -40,5 +41,13 @@ html {
   max-width: 35vw;
   width: 35vw;
   margin: 0 auto;
+
+  @media screen and (max-width: 1149px) {
+    flex-direction: column;
+    align-items: center;
+    margin: unset;
+    width: 100%;
+    max-width: unset;
+  }
 }
 </style>

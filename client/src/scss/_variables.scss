@@ -2,3 +2,18 @@ $yellow: #FFC432;
 $black1: #000000;
 $black2: #2A2F36;
 $grey: #DADADA;
+
+
+@mixin fluid-type($font-min, $font-max, $screen-min, $screen-max) {
+  font-size: #{$font-min}rem;
+
+  @media only screen and (min-width: #{$screen-min}px) {
+    font-size: calc(
+      #{$font-min}rem + #{($font-max - $font-min)} * (100vw - #{$screen-min}px) / (#{$screen-max} - #{$screen-min})
+    );
+  }
+
+  @media only screen and (min-width: #{$screen-max}px) {
+    font-size: #{$font-max}rem;
+  }
+}

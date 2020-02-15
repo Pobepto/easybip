@@ -24,7 +24,7 @@
     <template v-if="users.length">
       <hr class="payment_users-hr">
       <div class="payment_users-list">
-        <template v-for="(user, index) of users">
+        <template v-for="(user, index) of syncUser">
           <div
             class="payment_users-list-item"
             :key="index"
@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component, Prop, PropSync } from 'vue-property-decorator'
 import EasyTitle from '@/components/UI/Title.vue'
 import EasyInput from '@/components/UI/Input.vue'
 import EasyButton from '@/components/UI/Button.vue'
@@ -67,9 +67,9 @@ interface UserStructure {
   }
 })
 export default class PaymentUsers extends Vue {
+  @PropSync('users', { default: [] }) syncUser!: UserStructure[]
   @Prop(Function) readonly onClick!: () => {}
 
-  users: UserStructure[] = []
   user: UserStructure = {
     email: '',
     fullName: '',
@@ -77,7 +77,7 @@ export default class PaymentUsers extends Vue {
   }
 
   addUser () {
-    this.users.push(this.user)
+    this.syncUser.push(this.user)
     this.resetUser()
   }
 
@@ -90,11 +90,11 @@ export default class PaymentUsers extends Vue {
   }
 
   get totalUsers () {
-    return this.users.length
+    return this.syncUser.length
   }
 
   get totalAmount () {
-    return this.users.reduce((v, user) => v + Number(user.amount), 0)
+    return this.syncUser.reduce((v, user) => v + Number(user.amount), 0)
   }
 }
 </script>
