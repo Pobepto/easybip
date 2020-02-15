@@ -3,7 +3,7 @@
     <ReceiptPassword
       v-if="currentStep === step.Password"
       :password.sync="receipt.password"
-      :on-click="checkPassword"
+      :on-click="onPasswordCheck"
     />
     <ReceiptDashboard
       v-if="currentStep === step.Dashboard"
@@ -26,7 +26,8 @@ enum Step {
 
 @Component({
   components: {
-    ReceiptDashboard
+    ReceiptDashboard,
+    ReceiptPassword
   }
 })
 export default class Receipt extends Vue {
@@ -42,6 +43,10 @@ export default class Receipt extends Vue {
   onPasswordCheck () {
     const { link } = this.$route.params
     this.login({ password: this.receipt.password, link })
+      .then(() => {
+        console.log(1)
+        this.currentStep = this.step.Dashboard
+      })
   }
 }
 </script>

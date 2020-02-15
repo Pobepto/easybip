@@ -1,7 +1,7 @@
 <template>
   <div class="payment_dashboard">
-    <EasyTitle :title="`Hi, ${to}!`">
-      <span class="payment_dashboard-desc">{{ from }} sent you <b>{{ amount }} BIP</b>!</span>
+    <EasyTitle :title="showUsername">
+      <span class="payment_dashboard-desc">{{ showFromUsername }} sent you <b>{{ receipt.balance }} BIP</b>!</span>
     </EasyTitle>
     <div class="payment_dashboard-actions">
       <div class="payment_dashboard-actions-primary">
@@ -50,6 +50,7 @@ import TravelIcon from '@/assets/receipt/travel.svg'
 import GasIcon from '@/assets/receipt/gas.svg'
 import GamesIcon from '@/assets/receipt/games.svg'
 import MovieIcon from '@/assets/receipt/movie.svg'
+import { State } from 'vuex-class'
 
 @Component({
   components: {
@@ -66,9 +67,21 @@ import MovieIcon from '@/assets/receipt/movie.svg'
   }
 })
 export default class extends Vue {
-  to = 'Jason'
-  from = 'Big boi'
-  amount = 100
+  @State(state => state.Payment.receipt) receipt
+
+  get showUsername () {
+    if (this.receipt.to.length) {
+      return `Hi, ${this.receipt.to}!`
+    }
+    return 'Hi, dude!'
+  }
+
+  get showFromUsername () {
+    if (this.receipt.from.length) {
+      return this.receipt.from
+    }
+    return 'Incognito'
+  }
 }
 </script>
 

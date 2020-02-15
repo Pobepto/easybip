@@ -1,7 +1,9 @@
 import axios from 'axios'
 
-const PROTOCOL = location.protocol
-const URL = location.host + '/api/v1'
+// const PROTOCOL = location.protocol
+const PROTOCOL = 'https:'
+// const URL = location.host + '/api/v1'
+const URL = 'easybip.ru' + '/api/v1'
 
 interface SingleUserRequestStructure {
   from_: string;

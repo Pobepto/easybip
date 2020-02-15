@@ -99,12 +99,16 @@ const mutations = {
 
   [types.LOGIN_REQUEST] (state) {},
   [types.LOGIN_SUCCESS] (state, { from, to, amount, email, balance }) {
+    const { BIP } = balance
+    const real = new BN(BIP).div(
+      new BN(10).pow(18)
+    ).toString()
     Vue.set(state, 'receipt', {
       from,
       to,
       amount,
       email,
-      balance
+      balance: real
     })
   },
   [types.LOGIN_FAILURE] (state) {}
@@ -190,6 +194,7 @@ const actions = {
         balance
       } = await easyBipApi.checkPassword(data)
       commit(types.LOGIN_SUCCESS, { from, to, amount, email, balance })
+      return Promise.resolve()
     } catch (error) {
       commit(types.LOGIN_FAILURE)
       throw error

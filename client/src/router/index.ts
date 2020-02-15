@@ -47,7 +47,7 @@ const routes = [
       {
         path: ':link',
         name: 'ReceiptLink',
-        component: Payment,
+        component: Receipt,
         async beforeEnter (to, from, next) {
           const { link } = to.params
           Store.dispatch('isLinkActivated', { link })
