@@ -26,5 +26,8 @@ To build application for production
 $ yarn build
 ```
 
+#### App design
+<a href="https://github.com/Pobepto/easybip/issues/6">Images</a>
+
 ## Server part (Back-end)
 TODO
