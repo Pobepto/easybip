@@ -29,8 +29,7 @@ export default class EasyButton extends Vue {
   border-width: 1px;
   border-color: $yellow;
   color: $black1;
-
-  outline: none;
+  border-style: solid;
 
   height: 45px;
   width: 100%;
@@ -45,6 +44,7 @@ export default class EasyButton extends Vue {
 
   &.secondary {
     background-color: $grey;
+    border-color: $grey;
   }
 
   &:hover {
