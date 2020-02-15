@@ -1,11 +1,14 @@
 <template>
   <div class="payment_dashboard">
     <EasyTitle :title="showUsername">
-      <span class="payment_dashboard-desc">{{ showFromUsername }} sent you <b>{{ receipt.balance }} BIP</b>!</span>
+      <span class="payment_dashboard-desc">{{ showFromUsername }} sent you <b>{{ receipt.balance }} BIP</b></span>
     </EasyTitle>
     <div class="payment_dashboard-actions">
       <div class="payment_dashboard-actions-primary">
-        <EasyIconButton title="Receive">
+        <EasyIconButton
+          title="Receive"
+          @click="() => chooseAction(this.actions.Receive)"
+        >
           <ReceiveIcon />
         </EasyIconButton>
         <EasyIconButton title="Send">
@@ -37,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, PropSync } from 'vue-property-decorator'
 
 import EasyTitle from '@/components/UI/Title.vue'
 import EasyIconButton from '@/components/UI/IconButton.vue'
@@ -51,6 +54,8 @@ import GasIcon from '@/assets/receipt/gas.svg'
 import GamesIcon from '@/assets/receipt/games.svg'
 import MovieIcon from '@/assets/receipt/movie.svg'
 import { State } from 'vuex-class'
+
+import { ReceiptActions } from '../../enums'
 
 @Component({
   components: {
@@ -68,6 +73,9 @@ import { State } from 'vuex-class'
 })
 export default class extends Vue {
   @State(state => state.Payment.receipt) receipt
+  @PropSync('action', { default: 0 }) chooseAction !: () => {}
+
+  actions = ReceiptActions
 
   get showUsername () {
     if (this.receipt.to.length) {

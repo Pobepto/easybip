@@ -28,7 +28,7 @@ import EasyButton from '@/components/UI/Button.vue'
 })
 export default class PaymentProtection extends Vue {
   @PropSync('password', { default: '' }) syncPass!: string
-  @Prop(Function) readonly onClick!: () => Promise<any>
+  @Prop(Function) readonly onClick!: () => {}
 }
 </script>
 

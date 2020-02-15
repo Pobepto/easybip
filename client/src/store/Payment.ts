@@ -22,7 +22,8 @@ const types = flow(
   'GET_MONEY_BY_ADDRESS',
   'ACTIVATE_WALLET',
   'CHECK_LINK_ACTIVATE',
-  'LOGIN'
+  'LOGIN',
+  'TRANSFER'
 ])
 
 function initialState () {
@@ -40,6 +41,9 @@ function initialState () {
       amount: '',
       email: '',
       balance: ''
+    },
+    account: {
+      password: ''
     }
   }
 }
@@ -98,7 +102,7 @@ const mutations = {
   [types.CHECK_LINK_ACTIVATE_FAILURE] (state) {},
 
   [types.LOGIN_REQUEST] (state) {},
-  [types.LOGIN_SUCCESS] (state, { from, to, amount, email, balance }) {
+  [types.LOGIN_SUCCESS] (state, { from, to, amount, email, balance, password }) {
     const { BIP } = balance
     const real = new BN(BIP).div(
       new BN(10).pow(18)
@@ -110,8 +114,16 @@ const mutations = {
       email,
       balance: real
     })
+    Vue.set(state, 'account', {
+      password
+    })
   },
-  [types.LOGIN_FAILURE] (state) {}
+  [types.LOGIN_FAILURE] (state) {},
+
+  [types.TRANSFER_REQUEST] (state) {},
+  [types.TRANSFER_SUCCESS] (state) {},
+  [types.TRANSFER_FAILURE] (state) {}
+
 }
 
 const actions = {
@@ -186,6 +198,7 @@ const actions = {
   async login ({ commit }, data) {
     commit(types.LOGIN_REQUEST)
     try {
+      const { password } = data
       const {
         from_: from,
         to,
@@ -193,7 +206,7 @@ const actions = {
         email,
         balance
       } = await easyBipApi.checkPassword(data)
-      commit(types.LOGIN_SUCCESS, { from, to, amount, email, balance })
+      commit(types.LOGIN_SUCCESS, { from, to, amount, email, balance, password })
       return Promise.resolve()
     } catch (error) {
       commit(types.LOGIN_FAILURE)
@@ -202,16 +215,17 @@ const actions = {
   },
 
   async transfer ({ commit, state }, data) {
-    commit(types.LOGIN_REQUEST)
+    commit(types.TRANSFER_REQUEST)
     try {
       const info = {
         ...data,
-        password: state.receipt.password
+        password: state.account.password
       }
       await easyBipApi.sendMoney(info)
-      commit(types.LOGIN_SUCCESS)
+      commit(types.TRANSFER_SUCCESS)
+      return Promise.resolve()
     } catch (error) {
-      commit(types.LOGIN_FAILURE)
+      commit(types.TRANSFER_FAILURE)
       throw error
     }
   }

@@ -7,6 +7,11 @@
     />
     <ReceiptDashboard
       v-if="currentStep === step.Dashboard"
+      :action="beforeAction"
+    />
+    <ReceiptActionSend
+      v-if="currentStep === step.Send"
+      :on-click="back"
     />
   </div>
 </template>
@@ -16,7 +21,9 @@ import { Vue, Component } from 'vue-property-decorator'
 
 import ReceiptDashboard from '@/components/Receipt/Dashboard.vue'
 import ReceiptPassword from '@/components/Receipt/Password.vue'
+import ReceiptActionSend from '@/components/Receipt/Action/Send.vue'
 import { Action } from 'vuex-class'
+import { ReceiptActions } from '../enums'
 
 enum Step {
   Password,
@@ -27,7 +34,9 @@ enum Step {
 @Component({
   components: {
     ReceiptDashboard,
-    ReceiptPassword
+    ReceiptPassword,
+
+    ReceiptActionSend
   }
 })
 export default class Receipt extends Vue {
@@ -44,9 +53,18 @@ export default class Receipt extends Vue {
     const { link } = this.$route.params
     this.login({ password: this.receipt.password, link })
       .then(() => {
-        console.log(1)
         this.currentStep = this.step.Dashboard
       })
+  }
+
+  beforeAction (v: ReceiptActions) {
+    if (ReceiptActions.Receive === v) {
+      this.currentStep = this.step.Send
+    }
+  }
+
+  back () {
+    this.currentStep = this.step.Dashboard
   }
 }
 </script>
