@@ -8,7 +8,7 @@
     />
     <EasyButton
       title="Continue"
-      @click="beforeContinue"
+      @click="onClick"
     />
   </div>
 </template>
@@ -29,14 +29,6 @@ import EasyButton from '@/components/UI/Button.vue'
 export default class PaymentProtection extends Vue {
   @PropSync('password', { default: '' }) syncPass!: string
   @Prop(Function) readonly onClick!: () => Promise<any>
-
-  isLoading = false
-
-  async beforeContinue () {
-    this.isLoading = true
-    this.onClick()
-      .then(() => (this.isLoading = false))
-  }
 }
 </script>
 
