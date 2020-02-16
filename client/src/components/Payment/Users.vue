@@ -96,7 +96,7 @@ export default class PaymentUsers extends Vue {
 
   beforeClick () {
     const amount = new BN(this.totalAmount).plus(
-      new BN(this.syncUser.length).multipliedBy(0.1)
+      new BN(this.syncUser.length).multipliedBy(0.01)
     ).toString()
     this.setRequiredAmount({ amount })
     this.onClick()
