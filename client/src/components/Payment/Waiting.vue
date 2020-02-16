@@ -1,7 +1,10 @@
 <template>
   <div class="payment_waiting">
     <EasyTitle title="WAITING <br>FOR COINS">
-      <span class="payment_waiting-title-desc">Minimum amount <b>{{ requiredBalance }} BIP</b></span>
+      <span
+        v-if="!isZero"
+        class="payment_waiting-title-desc"
+      >Minimum amount <b>{{ requiredBalance }} BIP</b></span>
     </EasyTitle>
     <EasyInput
       label="Address"
@@ -73,6 +76,10 @@ export default class PaymentProtection extends Vue {
     return new BN(this.balance).gte(
       new BN(this.requiredBalance)
     )
+  }
+
+  get isZero () {
+    return new BN(this.requiredBalance).eq(0)
   }
 }
 </script>
