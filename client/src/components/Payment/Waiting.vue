@@ -1,6 +1,8 @@
 <template>
   <div class="payment_waiting">
-    <EasyTitle title="WAITING <br>FOR COINS" />
+    <EasyTitle title="WAITING <br>FOR COINS">
+      <span class="payment_waiting-title-desc">Minimum amount <b>{{ requiredBalance }} BIP</b></span>
+    </EasyTitle>
     <EasyInput
       label="Address"
       icon="copy"
@@ -14,6 +16,7 @@
         <b>BIP</b>
       </div>
       <EasyButton
+        v-if="checkRequiredAmount"
         title="Continue"
         @click="beforeContinue"
       />
@@ -46,6 +49,7 @@ export default class PaymentProtection extends Vue {
 
   @State(state => state.Payment.address) address
   @State(state => state.Payment.balance) balance
+  @State(state => state.Payment.requiredBalance) requiredBalance
 
   @Action checkMoneyAmount
   @Action activateWallet
@@ -64,11 +68,20 @@ export default class PaymentProtection extends Vue {
     await this.activateWallet({ address: this.address.value })
     this.onClick()
   }
+
+  get checkRequiredAmount () {
+    return new BN(this.balance).gte(
+      new BN(this.requiredBalance)
+    )
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .payment_waiting {
+  .payment_waiting-title-desc {
+    font-weight: 300;
+  }
   .payment_waiting-desc {
     display: flex;
     justify-content: center;

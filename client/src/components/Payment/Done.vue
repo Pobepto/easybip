@@ -2,12 +2,22 @@
   <div class="payment_done">
     <EasyTitle title="DONE, <br>SHARE LINK!" />
     <EasyInput
-      :value="currentLink"
+      v-if="link.length"
+      :value="currentLink(link)"
       :disabled="true"
       label="Link"
       icon="copy"
     />
-    <div class="payment_done-media">
+    <template v-for="(link, index) of links">
+      <EasyInput
+        :key="index"
+        :value="currentLink(link)"
+        :disabled="true"
+        label="Link"
+        icon="copy"
+      />
+    </template>
+    <div v-if="link.length" class="payment_done-media">
       <Telegram
         :url="shareLink"
         class="payment_done-media-icon"
@@ -62,10 +72,11 @@ import { Facebook, Telegram, Email, Twitter, WhatsApp } from 'vue-socialmedia-sh
 })
 export default class PaymentDone extends Vue {
   @State(state => state.Payment.receiveLink) link
+  @State(state => state.Payment.receiveLinks) links
 
-  get currentLink () {
+  currentLink (link) {
     const host = window.location.host
-    return `${host}/r/${this.link}`
+    return `${host}/r/${link}`
   }
 
   get shareLink () {

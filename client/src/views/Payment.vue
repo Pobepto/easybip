@@ -102,6 +102,7 @@ export default class Payment extends Vue {
   }
 
   @Action createSingleWallet
+  @Action createMultiWallet
 
   nextStep () {
     const {
@@ -134,7 +135,13 @@ export default class Payment extends Vue {
             to: this.payment.info.to,
             password: this.payment.password
           })
-        } else {}
+        } else {
+          this.createMultiWallet({
+            from_: this.payment.info.from,
+            password: this.payment.password,
+            users: this.payment.users
+          })
+        }
         // setStep(Users)
         // setStep(Waiting)
         break

@@ -8,8 +8,8 @@
     />
     <EasyInput
       label="Full name"
-      :value="user.fullName"
-      @input="v => user.fullName = v"
+      :value="user.fullname"
+      @input="v => user.fullname = v"
     />
     <EasyInput
       label="Amount"
@@ -29,7 +29,7 @@
             class="payment_users-list-item"
             :key="index"
           >
-            <span>{{ user.fullName }}</span>
+            <span>{{ user.fullname }}</span>
             <b>{{ user.amount }} BIP</b>
           </div>
         </template>
@@ -41,7 +41,7 @@
       </div>
       <EasyButton
         title="Continue"
-        @click="onClick"
+        @click="beforeClick"
       />
     </template>
   </div>
@@ -52,10 +52,13 @@ import { Vue, Component, Prop, PropSync } from 'vue-property-decorator'
 import EasyTitle from '@/components/UI/Title.vue'
 import EasyInput from '@/components/UI/Input.vue'
 import EasyButton from '@/components/UI/Button.vue'
+import { Mutation } from 'vuex-class'
+
+import BN from 'bignumber.js'
 
 interface UserStructure {
   email: string;
-  fullName: string;
+  fullname: string;
   amount: string;
 }
 
@@ -70,9 +73,11 @@ export default class PaymentUsers extends Vue {
   @PropSync('users', { default: [] }) syncUser!: UserStructure[]
   @Prop(Function) readonly onClick!: () => {}
 
+  @Mutation('SET_REQUIRED_AMOUNT') setRequiredAmount
+
   user: UserStructure = {
     email: '',
-    fullName: '',
+    fullname: '',
     amount: ''
   }
 
@@ -84,9 +89,17 @@ export default class PaymentUsers extends Vue {
   resetUser () {
     this.user = {
       email: '',
-      fullName: '',
+      fullname: '',
       amount: ''
     }
+  }
+
+  beforeClick () {
+    const amount = new BN(this.totalAmount).plus(
+      new BN(this.syncUser.length).multipliedBy(0.1)
+    ).toString()
+    this.setRequiredAmount({ amount })
+    this.onClick()
   }
 
   get totalUsers () {
@@ -94,7 +107,13 @@ export default class PaymentUsers extends Vue {
   }
 
   get totalAmount () {
-    return this.syncUser.reduce((v, user) => v + Number(user.amount), 0)
+    let total = new BN(0)
+    for (const u of this.syncUser) {
+      total = total.plus(
+        new BN(u.amount)
+      )
+    }
+    return total.toString()
   }
 }
 </script>

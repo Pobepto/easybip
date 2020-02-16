@@ -12,12 +12,14 @@ import Router from '@/router'
 const types = flow(
   flatMap(x => [x + '_REQUEST', x + '_SUCCESS', x + '_FAILURE']),
   concat([
-    'RESET'
+    'RESET',
+    'SET_REQUIRED_AMOUNT'
   ]),
   map(x => [x, x]),
   fromPairs
 )([
   'CREATE_SINGLE_WALLET',
+  'CREATE_MULTI_WALLET',
   'GET_ADDRESS_BY_URL',
   'GET_MONEY_BY_ADDRESS',
   'ACTIVATE_WALLET',
@@ -34,6 +36,8 @@ function initialState () {
     },
     balance: '0',
     receiveLink: '',
+    receiveLinks: [],
+    requiredBalance: '0',
     isActive: false,
     receipt: {
       from: '',
@@ -66,6 +70,12 @@ const mutations = {
   [types.CREATE_SINGLE_WALLET_SUCCESS] (state) {},
   [types.CREATE_SINGLE_WALLET_FAILURE] (state) {},
 
+  [types.CREATE_MULTI_WALLET_REQUEST] (state) {
+    Vue.set(state.address, 'loading', true)
+  },
+  [types.CREATE_MULTI_WALLET_SUCCESS] (state) {},
+  [types.CREATE_MULTI_WALLET_FAILURE] (state) {},
+
   [types.GET_ADDRESS_BY_URL_REQUEST] (state) {
     Vue.set(state, 'address', {
       value: '',
@@ -91,7 +101,11 @@ const mutations = {
 
   [types.ACTIVATE_WALLET_REQUEST] (state) {},
   [types.ACTIVATE_WALLET_SUCCESS] (state, { link }) {
-    state.receiveLink = link
+    if (Array.isArray(link)) {
+      state.receiveLinks = link
+    } else {
+      state.receiveLink = link
+    }
   },
   [types.ACTIVATE_WALLET_FAILURE] (state) {},
 
@@ -122,7 +136,11 @@ const mutations = {
 
   [types.TRANSFER_REQUEST] (state) {},
   [types.TRANSFER_SUCCESS] (state) {},
-  [types.TRANSFER_FAILURE] (state) {}
+  [types.TRANSFER_FAILURE] (state) {},
+
+  [types.SET_REQUIRED_AMOUNT] (state, { amount }) {
+    state.requiredBalance = amount
+  }
 
 }
 
@@ -140,6 +158,23 @@ const actions = {
       commit(types.CREATE_SINGLE_WALLET_SUCCESS)
     } catch (error) {
       commit(types.CREATE_SINGLE_WALLET_FAILURE)
+      throw error
+    }
+  },
+
+  async createMultiWallet ({ commit }, data) {
+    commit(types.CREATE_MULTI_WALLET_REQUEST)
+    try {
+      const { link } = await easyBipApi.sendMultiUsers(data)
+      await Router.push({
+        name: 'PaymentLink',
+        params: {
+          link
+        }
+      })
+      commit(types.CREATE_MULTI_WALLET_SUCCESS)
+    } catch (error) {
+      commit(types.CREATE_MULTI_WALLET_FAILURE)
       throw error
     }
   },
