@@ -67,7 +67,7 @@ $ python run.py
 
 ### API Documentation
 
-<a href="">Swagger</a>
+<a href="https://easybip.ru/docs">Swagger EasyBip</a>
 
 `https://easybip.ru`
 
