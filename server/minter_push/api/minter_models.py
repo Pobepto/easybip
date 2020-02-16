@@ -3,16 +3,21 @@ from typing import List, Dict
 from pydantic import BaseModel
 
 
+class User(BaseModel):
+    email: str = ""
+    fullname: str = ""
+    amount: str
+
+
 class SendToSingleUser(BaseModel):
     from_: str = ""
     to: str = ""
-    amount: str = ""
     password: str = ""
 
 
 class SendToSeveralUsers(BaseModel):
-    from_: str
-    users: List[Dict]
+    from_: str = ""
+    users: List[User]
     password: str = ""
 
 
