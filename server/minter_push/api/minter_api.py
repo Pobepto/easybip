@@ -35,7 +35,7 @@ async def send_to_single_user(request: SendToSingleUser):
         password_hash = get_password_hash(request.password)
         postgres.create_record(address=address, private_key=encrypted_private_key, link=link,
                                password=password_hash, from_=request.from_, to=request.to,
-                               amount=request.amount)
+                               amount="")
         return JSONResponse(
             {"link": link},
             status_code=200
@@ -76,7 +76,7 @@ async def send_to_several_users(request: SendToSeveralUsers):
             encrypted_private_key = encrypt_private_key(private_key=private_key, password=request.password)
             postgres.create_record(address=address, private_key=encrypted_private_key, link=link,
                                    password=password_hash, from_=request.from_,
-                                   to=user["fullname"], amount=user["amount"], email=user["email"],
+                                   to=user.fullname, amount=user.amount, email=user.email,
                                    source_link=source_link)
 
         return JSONResponse(
@@ -135,14 +135,9 @@ async def activate_wallet(address: str):
         if address_record is None:
             return JSONResponse(
                 content=f"The address {address} is not represented in the database",
-                status_code=401
-            )
-
-        if address_record is None:
-            return JSONResponse(
-                content=f"The address {address} is not represented in the database",
                 status_code=404
             )
+
         records = postgres.get_record_by_source_link(address_record["source_link"])
         if records is None:
             return JSONResponse(
@@ -173,10 +168,16 @@ async def activate_wallet(address: str):
                 links.append(record["link"])
             else:
                 links.append("")
-        return JSONResponse(
-            {"link": links},
-            status_code=200
-        )
+        if "" not in links:
+            return JSONResponse(
+                {"link": links},
+                status_code=200
+            )
+        else:
+            return JSONResponse(
+                {"link": links},
+                status_code=500,
+            )
     except Exception as exc:
         logger.error(exc)
         return JSONResponse(
@@ -234,12 +235,13 @@ async def send_bip_transaction(request: SendBIPTransaction):
                                                 private_key=private_key)
         if res.status_code == 200:
             return JSONResponse(
+                {},
                 status_code=200
             )
         else:
             if json.loads(res.text)['error']['code'] == 107:
                 return JSONResponse(
-                    status_code=407,
+                    status_code=400,
                     content="Not enough money")
             else:
                 logger.info(res.content)
