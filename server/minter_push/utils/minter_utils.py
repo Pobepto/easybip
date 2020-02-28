@@ -16,9 +16,9 @@ class MinterApiUtils:
         balance = self.minter_api.get_balance(address=address)
         return balance
 
-    def send_transaction(self, coin, to, value, private_key, from_address):
+    def send_transaction(self, coin, to, value, private_key, from_address, payload):
         nonce = self.minter_api.get_nonce(from_address)
-        tx = MinterSendCoinTx(coin, to, value, nonce=nonce, gas_coin='BIP', gas=1)
+        tx = MinterSendCoinTx(coin, to, value, nonce=nonce, gas_coin='BIP', gas=1, payload=payload)
         tx.sign(private_key)
         req = requests.post(url="https://gate-api.minter.network/api/v1/transaction/push",
                             json={

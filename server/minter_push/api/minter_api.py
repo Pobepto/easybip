@@ -230,9 +230,10 @@ async def send_bip_transaction(request: SendBIPTransaction):
             )
         address = record["address"]
         encrypted_private_key = record["private_key"]
+
         private_key = decrypt_private_key(encrypted_private_key, request.password)
         res = minter_api_utils.send_transaction(coin="BIP", to=request.to, value=request.amount, from_address=address,
-                                                private_key=private_key)
+                                                private_key=private_key, payload=request.payload)
         if res.status_code == 200:
             return JSONResponse(
                 {},
