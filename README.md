@@ -358,6 +358,7 @@ Send BIP from receiver`s link to another BIP wallet
 | `password`         | Password to get access to wallet   | `String`
 | `to`         | Wallet address to send coins   | `String`
 | `amount`         | Amount of coins  | `String`
+| `payload`      |  Payload | `String (Optional)`
 
 #### Example
 

@@ -26,6 +26,7 @@ class SendBIPTransaction(BaseModel):
     to: str
     password: str = ""
     amount: str
+    payload: str
 
 
 class CheckPassword(BaseModel):
