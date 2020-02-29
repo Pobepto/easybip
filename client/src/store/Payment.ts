@@ -54,7 +54,11 @@ function initialState () {
 
 const state = initialState()
 
-const getters = {}
+const getters = {
+  account (state) {
+    return state.account
+  }
+}
 
 const mutations = {
   [types.RESET] (state) {

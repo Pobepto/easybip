@@ -42,7 +42,7 @@ const mutations = {
   },
 
   [types.LIMITS_PHONE_SERVICE_REQUEST] (state) {},
-  [types.LIMITS_PHONE_SERVICE_SUCCESS] (state, { RUB: rub, limit }) {
+  [types.LIMITS_PHONE_SERVICE_SUCCESS] (state, { RUB: rub, LIMIT: limit }) {
     Vue.set(state, 'phone', {
       limit,
       rub
@@ -59,18 +59,18 @@ const actions = {
   async getLimits ({ commit }) {
     commit(types.LIMITS_PHONE_SERVICE_REQUEST)
     try {
-      const { RUB, limit } = await phoneServiceApi.getLimits()
-      commit(types.LIMITS_PHONE_SERVICE_SUCCESS, { RUB, limit })
+      const data = await phoneServiceApi.getLimits()
+      commit(types.LIMITS_PHONE_SERVICE_SUCCESS, data)
     } catch (error) {
       commit(types.LIMITS_PHONE_SERVICE_FAILURE)
       throw error
     }
   },
-  async transferToPhone ({ commit, state }, { phone, ...data }) {
+  async transferToPhone ({ commit, getters }, { phone, ...data }) {
     commit(types.TRANSFER_PHONE_SERVICE_REQUEST)
     try {
       const { keyword } = await phoneServiceApi.connectPhone({ phone })
-      const { password } = state.account
+      const { password } = getters.account
       const info: any = {
         ...data,
         password,
