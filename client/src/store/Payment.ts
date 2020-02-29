@@ -255,7 +255,7 @@ const actions = {
       const { password } = state.account
       const info = {
         ...data,
-        password: state.account.password
+        password
       }
       await easyBipApi.sendMoney(info)
       await dispatch('login', {
