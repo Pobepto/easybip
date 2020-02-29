@@ -9,8 +9,13 @@
       v-if="currentStep === step.Dashboard"
       :action="beforeAction"
     />
+
     <ReceiptActionSend
       v-if="currentStep === step.Send"
+      :on-click="back"
+    />
+    <ReceiptActionPhone
+      v-if="currentStep === step.Phone"
       :on-click="back"
     />
   </div>
@@ -21,14 +26,17 @@ import { Vue, Component } from 'vue-property-decorator'
 
 import ReceiptDashboard from '@/components/Receipt/Dashboard.vue'
 import ReceiptPassword from '@/components/Receipt/Password.vue'
+
 import ReceiptActionSend from '@/components/Receipt/Action/Send.vue'
+import ReceiptActionPhone from '@/components/Receipt/Action/Phone.vue'
 import { Action } from 'vuex-class'
 import { ReceiptActions } from '../enums'
 
 enum Step {
   Password,
   Dashboard,
-  Send
+  Send,
+  Phone
 }
 
 @Component({
@@ -36,7 +44,8 @@ enum Step {
     ReceiptDashboard,
     ReceiptPassword,
 
-    ReceiptActionSend
+    ReceiptActionSend,
+    ReceiptActionPhone
   }
 })
 export default class Receipt extends Vue {
@@ -60,6 +69,9 @@ export default class Receipt extends Vue {
   beforeAction (v: ReceiptActions) {
     if (ReceiptActions.Receive === v) {
       this.currentStep = this.step.Send
+    }
+    if (ReceiptActions.Phone === v) {
+      this.currentStep = this.step.Phone
     }
   }
 

@@ -6,6 +6,7 @@
       :value="value"
       :type="type"
       :disabled="disabled"
+      :placeholder="placeholder"
       @input="onInput"
     />
     <template v-if="icon.length">
@@ -35,6 +36,7 @@ export default class EasyInput extends Vue {
   @Prop({ default: 'text' }) readonly type!: string
   @Prop({ default: '' }) readonly icon!: string
   @Prop({ default: false }) readonly disabled!: boolean
+  @Prop({ default: '' }) readonly placeholder!: string
   @Prop() readonly value!: number | string
 
   timeoutNumber: number | undefined

@@ -4,5 +4,6 @@ export enum Type {
 }
 
 export enum ReceiptActions {
-  Receive
+  Receive,
+  Phone
 }

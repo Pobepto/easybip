@@ -9,7 +9,7 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   modules: {
     Payment,
-    Phone
+    ServicePhone: Phone
   }
 })
 

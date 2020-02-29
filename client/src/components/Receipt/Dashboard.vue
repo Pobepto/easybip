@@ -19,7 +19,10 @@
         <EasyIconButton title="Food">
           <FoodIcon />
         </EasyIconButton>
-        <EasyIconButton title="Phone">
+        <EasyIconButton
+          title="Phone"
+          @click="() => chooseAction(this.actions.Phone)"
+        >
           <PhoneIcon />
         </EasyIconButton>
         <EasyIconButton title="Travel">

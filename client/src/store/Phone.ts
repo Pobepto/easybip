@@ -7,7 +7,6 @@ import concat from 'lodash/fp/concat'
 
 import easyBipApi from '@/utils/api'
 import phoneServiceApi from '@/utils/service/phone'
-import Router from '@/router'
 
 const types = flow(
   flatMap(x => [x + '_REQUEST', x + '_SUCCESS', x + '_FAILURE']),
@@ -17,7 +16,8 @@ const types = flow(
   map(x => [x, x]),
   fromPairs
 )([
-  'CREATE_SINGLE_WALLET'
+  'LIMITS_PHONE_SERVICE',
+  'TRANSFER_PHONE_SERVICE'
 ])
 
 function initialState () {
@@ -52,7 +52,7 @@ const mutations = {
 
   [types.TRANSFER_PHONE_SERVICE_REQUEST] (state) {},
   [types.TRANSFER_PHONE_SERVICE_SUCCESS] (state) {},
-  [types.TRANSFER_PHONE_SERVICE_FAILURE] (state) {},
+  [types.TRANSFER_PHONE_SERVICE_FAILURE] (state) {}
 }
 
 const actions = {

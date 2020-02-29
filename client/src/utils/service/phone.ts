@@ -34,12 +34,12 @@ const connectPhone = ({ phone }) => {
 //       })
 //     }
 //   } catch (error) {
-    
+
 //   }
 // }
 
 export default {
   getLimits,
-  connectPhone,
+  connectPhone
   // createPayment
 }
