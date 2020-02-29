@@ -5,6 +5,12 @@
         <span class="content_left-title">Easy<br>Payment</span>
         <img src="@/assets/phone.png" class="content_left-phone" />
         <span class="content_left-desc">Fast. Easy. Secure.</span>
+        <div class="content_left-message">
+          <ul>
+            <li class="content_left-message-feature">Top up phone credit</li>
+            <li class="content_left-message-feature">Transfer to wallet</li>
+          </ul>
+        </div>
       </div>
       <div class="content_left-button">
         <EasyButton
@@ -79,7 +85,6 @@ export default class Home extends Vue {
         font-weight: 300;
         font-size: 2rem;
         padding: 1rem;
-        margin-bottom: 2rem;
       }
 
       .content_left-phone {
@@ -98,6 +103,14 @@ export default class Home extends Vue {
 
       @media screen and (max-width: 1149px) {
         width: 20rem;
+      }
+    }
+
+    .content_left-message {
+      padding: 1rem;
+      .content_left-message-feature {
+        font-size: 0.9rem;
+        margin: 0.5rem 0;
       }
     }
   }
