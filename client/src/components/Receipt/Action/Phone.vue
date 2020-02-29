@@ -1,6 +1,6 @@
 <template>
   <div class="receipt_send">
-    <EasyTitle title="SEND MONEY">
+    <EasyTitle title="PHONE SERVICE">
       <div class="payment_dashboard">
         <span class="payment_dashboard-desc">You're balance: <b>{{ balance }} BIP</b></span>
         <span class="payment_dashboard-desc">Day limit: <b>{{ phone.limit }} BIP</b></span>
@@ -20,6 +20,12 @@
       title="Continue"
       :loading="isLoading"
       @click="beforeClick"
+    />
+    <EasyButton
+      title="Back"
+      type="secondary"
+      :loading="isLoading"
+      @click="onClick"
     />
   </div>
 </template>

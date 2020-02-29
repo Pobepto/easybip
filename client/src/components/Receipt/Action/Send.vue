@@ -16,6 +16,12 @@
       :loading="isLoading"
       @click="beforeClick"
     />
+    <EasyButton
+      title="Back"
+      type="secondary"
+      :loading="isLoading"
+      @click="onClick"
+    />
   </div>
 </template>
 

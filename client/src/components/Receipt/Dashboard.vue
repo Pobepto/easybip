@@ -11,21 +11,21 @@
         >
           <ReceiveIcon />
         </EasyIconButton>
-        <EasyIconButton title="Send">
-          <SendIcon />
-        </EasyIconButton>
-      </div>
-      <div class="payment_dashboard-actions-secondary">
-        <EasyIconButton title="Food">
-          <FoodIcon />
-        </EasyIconButton>
         <EasyIconButton
           title="Phone"
           @click="() => chooseAction(this.actions.Phone)"
         >
           <PhoneIcon />
         </EasyIconButton>
-        <EasyIconButton title="Travel">
+      </div>
+      <div class="payment_dashboard-actions-secondary">
+        <!-- <EasyIconButton title="Food">
+          <FoodIcon />
+        </EasyIconButton> -->
+        <!-- <EasyIconButton title="Send">
+          <SendIcon />
+        </EasyIconButton> -->
+        <!-- <EasyIconButton title="Travel">
           <TravelIcon />
         </EasyIconButton>
         <EasyIconButton title="Stuff">
@@ -36,7 +36,7 @@
         </EasyIconButton>
         <EasyIconButton title="Movie">
           <MovieIcon />
-        </EasyIconButton>
+        </EasyIconButton> -->
       </div>
     </div>
   </div>
