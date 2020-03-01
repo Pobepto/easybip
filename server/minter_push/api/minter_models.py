@@ -32,3 +32,8 @@ class SendBIPTransaction(BaseModel):
 class CheckPassword(BaseModel):
     link: str
     password: str
+
+
+class Gift(BaseModel):
+    gift_name: str
+    link: str

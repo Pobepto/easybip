@@ -5,3 +5,4 @@ requests
 minter-sdk
 short_url
 pycryptodomex
+python-multipart
