@@ -346,7 +346,7 @@ async def get_gift(link: str):
         )
 
 
-@app.post("/api/v1/gift/create")
+@app.post("/api/v1/gift")
 async def get_gift_wallet(request: Gift):
     """
     Return sum and address from gift api
