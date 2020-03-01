@@ -69,6 +69,11 @@ const sendMoney = ({ link, to, password, amount, payload }) => {
     .then(({ data }) => data)
 }
 
+const getUserGifts = ({ link }) => {
+  return axios.get(`${PROTOCOL}//${URL}/gift/${link})`)
+    .then(({ data }) => data)
+}
+
 export default {
   sendSingleUser,
   sendMultiUsers,
@@ -77,5 +82,6 @@ export default {
   activateWallet,
   isLinkActive,
   checkPassword,
-  sendMoney
+  sendMoney,
+  getUserGifts
 }
