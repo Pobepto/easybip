@@ -65,7 +65,8 @@ const checkPassword = ({ link, password }) => {
 }
 
 const sendMoney = ({ link, to, password, amount, payload }) => {
-  return axios.post(`${PROTOCOL}//${URL}/send/bip_wallet`, { link, to, password, amount, payload })
+  const p = payload || ''
+  return axios.post(`${PROTOCOL}//${URL}/send/bip_wallet`, { link, to, password, amount, payload: p })
     .then(({ data }) => data)
 }
 

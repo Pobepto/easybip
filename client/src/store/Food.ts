@@ -23,11 +23,12 @@ const types = flow(
 
 function initialState () {
   return {
+    isLoading: false,
     gifts: [
       'y1000',
       'y2000',
-      'y3000',
-      't1'
+      'y3000'
+      // 't1'
     ],
     account: {
       gifts: []
@@ -52,15 +53,20 @@ const mutations = {
     })
   },
 
-  [types.PRICES_FOOD_SERVICE_REQUEST] (state) {},
+  [types.PRICES_FOOD_SERVICE_REQUEST] (state) {
+    state.isLoading = true
+  },
   [types.PRICES_FOOD_SERVICE_SUCCESS] (state, { summ: sum, address }) {
+    state.isLoading = false
     Vue.set(state, 'bill', {
       sum,
       address,
       date: new Date().getTime()
     })
   },
-  [types.PRICES_FOOD_SERVICE_FAILURE] (state) {},
+  [types.PRICES_FOOD_SERVICE_FAILURE] (state) {
+    state.isLoading = false
+  },
 
   [types.TRANSFER_FOOD_SERVICE_REQUEST] (state) {},
   [types.TRANSFER_FOOD_SERVICE_SUCCESS] (state) {},
@@ -115,7 +121,7 @@ const actions = {
   async getMyGifts ({ commit }, { link }) {
     commit(types.GET_MY_FOOD_GIFTS_REQUEST)
     try {
-      const gifts = await easyBipApi.getUserGifts({ link })
+      const { gifts } = await easyBipApi.getUserGifts({ link })
       commit(types.GET_MY_FOOD_GIFTS_SUCCESS, { gifts })
       return
     } catch (error) {

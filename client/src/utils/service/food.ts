@@ -1,15 +1,14 @@
+// @ts-nocheck
 import axios from 'axios'
+import snakeCase from 'lodash/snakeCase'
 
-const URL = 'https://minterfood.ru/miniapi/create_pay.php'
+const URL = 'https://easybip.ru/api/v1/gift'
 
 const createOrder = ({ link, product }) => {
-  const webhook = `https://easybip.ru/api/v1/gift/order/${link}/${product}`
-  const formData = new FormData()
-
-  formData.append('product', product)
-  formData.append('webhook', webhook)
-
-  return axios.post(URL, formData)
+  return axios.post(URL, {
+    [snakeCase('giftName')]: product,
+    link
+  })
     .then(({ data }) => data)
 }
 

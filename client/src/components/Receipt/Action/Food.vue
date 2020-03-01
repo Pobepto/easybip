@@ -19,7 +19,7 @@
     />
     <EasyButton
       title="Continue"
-      :loading="isLoading"
+      :loading="isGlobalLoading || isLoading"
       @click="beforeClick"
     />
     <EasyButton
@@ -28,6 +28,9 @@
       :loading="isLoading"
       @click="onClick"
     />
+    <template v-for="(g, i) of myGifst">
+      <span :key="i">{{ g }}</span>
+    </template>
   </div>
 </template>
 
@@ -50,8 +53,10 @@ import { Action, State } from 'vuex-class'
 export default class FoodService extends Vue {
   @Prop(Function) readonly onClick!: () => {}
   @State(state => state.Payment.receipt.balance) balance
+  @State(state => state.ServiceFood.isLoading) isGlobalLoading
   @State(state => state.ServiceFood.bill) bill
   @State(state => state.ServiceFood.gifts) gifts
+  @State(state => state.ServiceFood.account.gifts) myGifst
 
   form = {
     product: ''
@@ -73,6 +78,13 @@ export default class FoodService extends Vue {
 
   @Action getPrices
   @Action transferToFood
+  @Action getMyGifts
+
+  created () {
+    const { link } = this.$route.params
+    this.getPrices({ link, product: this.gifts[0] })
+    this.getMyGifts({ link })
+  }
 
   onGiftSelect (product) {
     this.form.product = product
@@ -86,6 +98,8 @@ export default class FoodService extends Vue {
     this.transferToFood({
       ...this.form,
       product: this.form.product,
+      amount: this.bill.sum,
+      to: this.bill.address,
       link
     })
       .then(({ isChanged }) => {
