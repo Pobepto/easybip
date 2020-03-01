@@ -125,17 +125,18 @@ async def activate_wallet(address: str):
     """
     try:
         address_record = postgres.get_record_by_address(address)
-        if address_record["source_link"] == "":
-            postgres.activate_wallet(address)
-            return JSONResponse(
-                {"link": address_record["link"]},
-                status_code=200
-            )
 
         if address_record is None:
             return JSONResponse(
                 content=f"The address {address} is not represented in the database",
                 status_code=404
+            )
+
+        if address_record["source_link"] == "":
+            postgres.activate_wallet(address)
+            return JSONResponse(
+                {"link": address_record["link"]},
+                status_code=200
             )
 
         records = postgres.get_record_by_source_link(address_record["source_link"])
