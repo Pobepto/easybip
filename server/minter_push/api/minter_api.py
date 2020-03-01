@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-
+import requests
 from fastapi import FastAPI, Form
 from starlette.responses import JSONResponse
 
@@ -9,7 +9,7 @@ from minter_push.utils.minter_utils import MinterApiUtils
 from minter_push.utils.utils import create_short_link, encrypt_private_key, get_password_hash, decrypt_private_key, \
     compare_hash, send_email
 from minter_push.db.postgresql import PostgreSQL
-from minter_push.api.minter_models import SendToSingleUser, SendToSeveralUsers, SendBIPTransaction, CheckPassword
+from minter_push.api.minter_models import SendToSingleUser, SendToSeveralUsers, SendBIPTransaction, CheckPassword, Gift
 
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.DEBUG)
@@ -336,6 +336,32 @@ async def get_gift(link: str):
         gifts_req = [{"gift_name": gift["gift_name"], "code": gift["code"]} for gift in gifts]
         return JSONResponse(
             {"gifts": gifts_req},
+            status_code=200
+        )
+    except Exception as exc:
+        logger.error(exc)
+        return JSONResponse(
+            status_code=500,
+            content="Something goes wrong."
+        )
+
+
+@app.post("/api/v1/gift")
+async def get_gift_wallet(request: Gift):
+    """
+    Return sum and address from gift api
+    :return: {"summ":"summ", "address":"address"}
+    """
+    try:
+        url = "http://minterfood.ru/miniapi/create_pay.php"
+        payload = {"webhook": f'https://easybip.ru/api/v1/gift/order/{request.link}/{request.gift_name}',
+                   "product": request.gift_name}
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        response = requests.post(url, headers=headers, data=payload)
+        return JSONResponse(
+            {"summ": json.loads(response.content)["summ"], "address": json.loads(response.content)["address"]},
             status_code=200
         )
     except Exception as exc:
