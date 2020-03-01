@@ -79,6 +79,7 @@ export default class EasyInput extends Vue {
 
     &:disabled {
       cursor: not-allowed;
+      background: #ffffff;
     }
   }
   .input_block-icon-msg {

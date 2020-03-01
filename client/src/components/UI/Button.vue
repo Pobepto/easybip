@@ -42,6 +42,8 @@ export default class EasyButton extends Vue {
 
   margin-bottom: 1rem;
 
+  outline: none;
+
   &.secondary {
     background-color: $grey;
     border-color: $grey;

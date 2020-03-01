@@ -5,6 +5,14 @@
     </EasyTitle>
     <div class="payment_dashboard-actions">
       <div class="payment_dashboard-actions-primary">
+        <!-- <EasyIconButton
+          title="Receive"
+          @click="() => chooseAction(this.actions.Receive)"
+        >
+          <ReceiveIcon />
+        </EasyIconButton> -->
+      </div>
+      <div class="payment_dashboard-actions-secondary">
         <EasyIconButton
           title="Receive"
           @click="() => chooseAction(this.actions.Receive)"
@@ -17,11 +25,12 @@
         >
           <PhoneIcon />
         </EasyIconButton>
-      </div>
-      <div class="payment_dashboard-actions-secondary">
-        <!-- <EasyIconButton title="Food">
+        <EasyIconButton
+          title="Food"
+          @click="() => chooseAction(this.actions.Food)"
+        >
           <FoodIcon />
-        </EasyIconButton> -->
+        </EasyIconButton>
         <!-- <EasyIconButton title="Send">
           <SendIcon />
         </EasyIconButton> -->

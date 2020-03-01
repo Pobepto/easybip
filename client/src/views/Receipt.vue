@@ -18,6 +18,10 @@
       v-if="currentStep === step.Phone"
       :on-click="back"
     />
+    <ReceiptActionFood
+      v-if="currentStep === step.Food"
+      :on-click="back"
+    />
   </div>
 </template>
 
@@ -29,6 +33,7 @@ import ReceiptPassword from '@/components/Receipt/Password.vue'
 
 import ReceiptActionSend from '@/components/Receipt/Action/Send.vue'
 import ReceiptActionPhone from '@/components/Receipt/Action/Phone.vue'
+import ReceiptActionFood from '@/components/Receipt/Action/Food.vue'
 import { Action } from 'vuex-class'
 import { ReceiptActions } from '../enums'
 
@@ -36,7 +41,8 @@ enum Step {
   Password,
   Dashboard,
   Send,
-  Phone
+  Phone,
+  Food
 }
 
 @Component({
@@ -45,7 +51,8 @@ enum Step {
     ReceiptPassword,
 
     ReceiptActionSend,
-    ReceiptActionPhone
+    ReceiptActionPhone,
+    ReceiptActionFood
   }
 })
 export default class Receipt extends Vue {
@@ -72,6 +79,9 @@ export default class Receipt extends Vue {
     }
     if (ReceiptActions.Phone === v) {
       this.currentStep = this.step.Phone
+    }
+    if (ReceiptActions.Food === v) {
+      this.currentStep = this.step.Food
     }
   }
 

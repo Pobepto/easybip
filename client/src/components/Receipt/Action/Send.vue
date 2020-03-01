@@ -39,7 +39,7 @@ import { Action, State } from 'vuex-class'
     EasyButton
   }
 })
-export default class PaymentProtection extends Vue {
+export default class SendService extends Vue {
   @Prop(Function) readonly onClick!: () => {}
   @State(state => state.Payment.receipt.balance) balance
 
