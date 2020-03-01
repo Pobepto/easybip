@@ -20,8 +20,8 @@ class PostgreSQL:
         cursor = self.con.cursor()
         cursor.execute(
             f"""INSERT INTO Wallets
-                VALUES ('{address}', '{private_key}', '{link}', '{password}', '{from_}',
-                        '{to}', '{amount}', '{email}', '{activated}', '{source_link}');
+                VALUES ('{str(address)}', '{str(private_key)}', '{str(link)}', '{str(password)}', '{str(from_)}',
+                        '{str(to)}', '{str(amount)}', '{str(email)}', '{str(activated)}', '{str(source_link)}');
             """)
         cursor.close()
 
@@ -40,7 +40,7 @@ class PostgreSQL:
         cursor.execute(
             f"""SELECT * 
                 FROM Wallets 
-                WHERE SourceLink = '{source_link}';
+                WHERE SourceLink = '{str(source_link)}';
             """
         )
         res = self.__wrap_up_record(cursor.fetchall())
@@ -52,7 +52,7 @@ class PostgreSQL:
         cursor.execute(
             f"""SELECT * 
                 FROM Wallets 
-                WHERE Link = '{link}';
+                WHERE Link = '{str(link)}';
             """
         )
         res = self.__wrap_up_record(cursor.fetchall())
@@ -64,7 +64,7 @@ class PostgreSQL:
         cursor.execute(
             f"""SELECT * 
                 FROM Wallets 
-                WHERE Address = '{address}';
+                WHERE Address = '{str(address)}';
             """
         )
         res = self.__wrap_up_record(cursor.fetchall())
@@ -76,7 +76,7 @@ class PostgreSQL:
         cursor.execute(
             f"""UPDATE Wallets
                 SET Activated = 1
-                WHERE Address = '{address}'
+                WHERE Address = '{str(address)}'
             """
         )
         cursor.close()
@@ -97,3 +97,34 @@ class PostgreSQL:
             return wrapped_records
         else:
             return None
+
+    def create_gift_record(self, link, code, gift_name):
+        cursor = self.con.cursor()
+        cursor.execute(
+            f"""INSERT INTO Gifts
+                VALUES ('{str(link)}', '{str(code)}', '{str(gift_name)}');
+            """
+        )
+        cursor.close()
+
+    def get_gift_record_by_link(self, link):
+        cursor = self.con.cursor()
+        cursor.execute(
+            f"""SELECT * 
+                FROM Gifts 
+                WHERE link = '{str(link)}';
+            """
+        )
+        res = self.__wrap_up_gift_record(cursor.fetchall())
+        cursor.close()
+        return res
+
+    def __wrap_up_gift_record(self, records):
+        if len(records) > 0:
+            wrapped_records = []
+            for record in records:
+                wrapped_records.append(
+                    {"link": record[0], "code": record[1], "gift_name": record[2]})
+            return wrapped_records
+        else:
+            return []

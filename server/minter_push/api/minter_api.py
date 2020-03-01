@@ -2,7 +2,7 @@ import json
 import logging
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
 from starlette.responses import JSONResponse
 
 from minter_push.utils.minter_utils import MinterApiUtils
@@ -303,6 +303,39 @@ async def check_password(address: str):
         balance = minter_api_utils.get_balance(address)["result"]["balance"]
         return JSONResponse(
             {"balance": balance},
+            status_code=200
+        )
+    except Exception as exc:
+        logger.error(exc)
+        return JSONResponse(
+            status_code=500,
+            content="Something goes wrong."
+        )
+
+
+@app.post("/api/v1/gift/order/{link}/{gift_name}")
+async def gift_webhook(link: str, gift_name: str, code: str = Form(...)):
+    """
+    Webhook for gifts
+    """
+    try:
+        logger.info(f"GIFT INFO. Link: {link}. Gift: {gift_name}. Code: {code}")
+        postgres.create_gift_record(link, code, gift_name)
+    except Exception as exc:
+        logger.error(exc)
+
+
+@app.get("/api/v1/gift/{link}")
+async def get_gift(link: str):
+    """
+    Return list of user gifts
+    :return: {"gifts": [{"gift_name":"gift_name", "code":"code"}}]}
+    """
+    try:
+        gifts = postgres.get_gift_record_by_link(link=link)
+        gifts_req = [{"gift_name": gift["gift_name"], "code": gift["code"]} for gift in gifts]
+        return JSONResponse(
+            {"gifts": gifts_req},
             status_code=200
         )
     except Exception as exc:
