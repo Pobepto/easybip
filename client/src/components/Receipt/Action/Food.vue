@@ -28,8 +28,10 @@
       :loading="isLoading"
       @click="onClick"
     />
+    <p class="codes_title">My codes</p>
     <template v-for="(g, i) of myGifst">
-      <span :key="i">{{ g }}</span>
+      <p :key="i" class="codes_title-item">
+        <b>Product</b> - {{ g.gift_name }} | <b>Code</b> - {{ g.code }}</p>
     </template>
   </div>
 </template>
@@ -120,4 +122,14 @@ export default class FoodService extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.codes_title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.codes_title-item {
+  margin: 0.4rem 0;
+  font-size: 0.9rem;
+  font-weight: 300;
+}
 </style>
