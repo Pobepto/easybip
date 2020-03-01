@@ -71,7 +71,7 @@ const sendMoney = ({ link, to, password, amount, payload }) => {
 }
 
 const getUserGifts = ({ link }) => {
-  return axios.get(`${PROTOCOL}//${URL}/gift/${link})`)
+  return axios.get(`${PROTOCOL}//${URL}/gift/${link}`)
     .then(({ data }) => data)
 }
 
