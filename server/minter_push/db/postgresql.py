@@ -20,9 +20,10 @@ class PostgreSQL:
         cursor = self.con.cursor()
         cursor.execute(
             f"""INSERT INTO Wallets
-                VALUES ('{str(address)}', '{str(private_key)}', '{str(link)}', '{str(password)}', '{str(from_)}',
-                        '{str(to)}', '{str(amount)}', '{str(email)}', '{str(activated)}', '{str(source_link)}');
-            """)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+            """,
+            (str(address), str(private_key), str(link), str(password), str(from_),
+             str(to), str(amount), str(email), str(activated), str(source_link),))
         cursor.close()
 
     def count_of_records(self):
@@ -40,8 +41,9 @@ class PostgreSQL:
         cursor.execute(
             f"""SELECT * 
                 FROM Wallets 
-                WHERE SourceLink = '{str(source_link)}';
-            """
+                WHERE SourceLink = %s;
+            """,
+            (str(source_link),)
         )
         res = self.__wrap_up_record(cursor.fetchall())
         cursor.close()
@@ -52,8 +54,9 @@ class PostgreSQL:
         cursor.execute(
             f"""SELECT * 
                 FROM Wallets 
-                WHERE Link = '{str(link)}';
-            """
+                WHERE Link = %s;
+            """,
+            (str(link),)
         )
         res = self.__wrap_up_record(cursor.fetchall())
         cursor.close()
@@ -64,8 +67,9 @@ class PostgreSQL:
         cursor.execute(
             f"""SELECT * 
                 FROM Wallets 
-                WHERE Address = '{str(address)}';
-            """
+                WHERE Address = %s;
+            """,
+            (str(address),)
         )
         res = self.__wrap_up_record(cursor.fetchall())
         cursor.close()
@@ -76,8 +80,9 @@ class PostgreSQL:
         cursor.execute(
             f"""UPDATE Wallets
                 SET Activated = 1
-                WHERE Address = '{str(address)}'
-            """
+                WHERE Address = %s
+            """,
+            (str(address),)
         )
         cursor.close()
 
@@ -102,8 +107,9 @@ class PostgreSQL:
         cursor = self.con.cursor()
         cursor.execute(
             f"""INSERT INTO Gifts
-                VALUES ('{str(link)}', '{str(code)}', '{str(gift_name)}');
-            """
+                VALUES (%s, %s, %s);
+            """,
+            (str(link), str(code), str(gift_name),)
         )
         cursor.close()
 
@@ -112,8 +118,9 @@ class PostgreSQL:
         cursor.execute(
             f"""SELECT * 
                 FROM Gifts 
-                WHERE link = '{str(link)}';
-            """
+                WHERE link = %s;
+            """,
+            (str(link),)
         )
         res = self.__wrap_up_gift_record(cursor.fetchall())
         cursor.close()
